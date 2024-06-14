@@ -20,16 +20,15 @@ export default function Page() {
         }}
       >
         {STATIONS.map((station) => (
-            <Marker
-              key={station.id}
-              coordinate={{
-                latitude: station.latitude,
-                longitude: station.longitude,
-              }}
-              title={station.name}
-              description={station.name}
-              onPress={() => handleOpenStationPage(station.id)}
-            />
+          <Marker
+            key={station.id}
+            coordinate={{
+              latitude: station.latitude,
+              longitude: station.longitude,
+            }}
+            title={station.name}
+            onPress={() => handleOpenStationPage(station.id)}
+          />
         ))}
       </MapView>
     </View>

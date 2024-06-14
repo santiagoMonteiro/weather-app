@@ -1,112 +1,148 @@
-import { Image, StyleSheet, Platform, Text } from 'react-native'
+import { StyleSheet, ActivityIndicator } from 'react-native'
 
-import { HelloWave } from '@/components/HelloWave'
-import ParallaxScrollView from '@/components/ParallaxScrollView'
 import { ThemedText } from '@/components/ThemedText'
 import { ThemedView } from '@/components/ThemedView'
 import { useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
+import { Colors } from '@/constants/Colors'
+import { format } from 'date-fns'
 
 type ObservedMeteorologicalData = {
-  observedMeteorologicalData: {
-    id: string
-    date: Date
-    temperature: number
-    humidity: number
-    station_id: string
-  }
+  id: string
+  date: Date
+  temperature: number
+  humidity: number
+  station_id: string
+}
+
+type ObservedHydrologicalData = {
+  id: string
+  date: Date
+  elevation: number
+  flow: number
+  accumulated_rain: number
+  station_id: string
+  climatologicalInterpretation: string
 }
 
 export default function HomeScreen() {
   const { id } = useLocalSearchParams<{ id: string }>()
+
+  const [observedHydrologicalData, setObservedHydrologicalData] =
+    useState<ObservedHydrologicalData>({} as ObservedHydrologicalData)
+
   const [observedMeteorologicalData, setObservedMeteorologicalData] =
     useState<ObservedMeteorologicalData>({} as ObservedMeteorologicalData)
 
-  useEffect(() => {
-    // async function getObservedMeteorologicalData() {
-    //   const response = await fetch(
-    //     `https://labclim.uea.edu.br/api/meteorological-data/observed/${id}`
-    //   )
-    //   const observedMeteorologicalData = await response.json()
+  const [loading, setLoading] = useState(true)
 
-    //   if (observedMeteorologicalData) {
-    //     console.log(observedMeteorologicalData)
-    //     setObservedMeteorologicalData(observedMeteorologicalData)
-    //   }
-    // }
-    // getObservedMeteorologicalData()
-    fetch(
-      `https://labclim.uea.edu.br/api/meteorological-data/observed/${id}`
-    )
-    .then((response) => response.json())
-    .then((data) => setObservedMeteorologicalData(data))
+  useEffect(() => {
+    fetch(`https://labclim.uea.edu.br/api/hydrological-data/observed/${id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setObservedHydrologicalData(data)
+      })
+      .catch((e) => console.error(e))
+
+    fetch(`https://labclim.uea.edu.br/api/meteorological-data/observed/${id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setObservedMeteorologicalData(data)
+        setLoading(false)
+      })
+      .catch((e) => console.error(e))
   }, [])
 
-  console.log(observedMeteorologicalData)
+  if (loading) {
+    return (
+      <ThemedView style={styles.loadingContainer}>
+        <ActivityIndicator size='large' color={Colors.light.background} />
+      </ThemedView>
+    )
+  }
 
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }
-    >
+    <ThemedView style={styles.mainContainer}>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type='title'>{id}</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type='subtitle'>Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit{' '}
-          <ThemedText type='defaultSemiBold'>app/(tabs)/index.tsx</ThemedText>{' '}
-          to see changes. Press{' '}
-          <ThemedText type='defaultSemiBold'>
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-            {/* {"temperature " + observedMeteorologicalData.observedMeteorologicalData.temperature} */}
-          </ThemedText>{' '}
+        <ThemedText type='title'>
+          {observedHydrologicalData.station_id}
         </ThemedText>
       </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type='subtitle'>Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this
-          starter app.
-        </ThemedText>
+
+      <ThemedView style={styles.generalDataContainer}>
+        <ThemedView style={styles.hydrologicalDataContainer}>
+          <ThemedText type='subtitle' style={styles.hydrologicalDataTitle}>
+            Dados Hidrológicos:
+          </ThemedText>
+          <ThemedText type='default'>
+            Data do Registro:{' '}
+            {observedHydrologicalData.date &&
+              format(observedHydrologicalData.date, 'dd/MM/yyyy HH:mm')}
+          </ThemedText>
+          <ThemedText type='default'>
+            Nível do Rio: {observedHydrologicalData.elevation}m
+          </ThemedText>
+          <ThemedText type='default'>
+            Interpretação Climatológica:{' '}
+            {observedHydrologicalData.climatologicalInterpretation}
+          </ThemedText>
+          <ThemedText type='default'>
+            Vazão: {observedHydrologicalData.flow} m³/s
+          </ThemedText>
+          <ThemedText type='default'>
+            Chuva Acumulada do Dia: {observedHydrologicalData.accumulated_rain}{' '}
+            mm
+          </ThemedText>
+        </ThemedView>
+
+        <ThemedText type='subtitle'>Dados Meteorológicos:</ThemedText>
+        <ThemedView style={styles.meteorologicalDataContainer}>
+          <ThemedText type='default'>
+            Data do Registro:{' '}
+            {observedMeteorologicalData.date &&
+              format(observedMeteorologicalData.date, 'dd/MM/yyyy HH:mm')}
+          </ThemedText>
+          <ThemedText type='default'>
+            Temperatura: {observedMeteorologicalData.temperature}
+            °C
+          </ThemedText>
+          <ThemedText type='default'>
+            Umidade: {observedMeteorologicalData.humidity}%
+          </ThemedText>
+        </ThemedView>
       </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type='subtitle'>Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type='defaultSemiBold'>npm run reset-project</ThemedText>{' '}
-          to get a fresh <ThemedText type='defaultSemiBold'>app</ThemedText>{' '}
-          directory. This will move the current{' '}
-          <ThemedText type='defaultSemiBold'>app</ThemedText> to{' '}
-          <ThemedText type='defaultSemiBold'>app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    </ThemedView>
   )
 }
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+    paddingTop: '20%',
+    padding: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: 8,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  generalDataContainer: {
+    flex: 1,
+    marginTop: 50,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  meteorologicalDataContainer: {
+    marginTop: 20,
+  },
+  hydrologicalDataContainer: {
+    marginBottom: 30,
+  },
+  hydrologicalDataTitle: {
+    marginBottom: 20,
   },
 })
