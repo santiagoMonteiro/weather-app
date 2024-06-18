@@ -3,6 +3,7 @@ import {
   ActivityIndicator,
   ScrollView,
   SafeAreaView,
+  Image,
 } from 'react-native'
 
 import { ThemedText } from '@/components/ThemedText'
@@ -11,6 +12,7 @@ import { useEffect, useState } from 'react'
 import { Colors } from '@/constants/Colors'
 import { format } from 'date-fns'
 import { useStationContext } from '@/hooks/useStationContext'
+import { formatNumericalData } from '@/utils/formatData'
 
 type ForecastHydrologicalData = {
   id: string
@@ -53,13 +55,15 @@ export default function ObservedDataScreen() {
   return (
     <ThemedView style={styles.mainContainer}>
       <ThemedView style={styles.titleContainer}>
+        <Image style={styles.logo} source={require('@/assets/images/uea.png')} />
         <ThemedText type='title'>{station.name}</ThemedText>
+        <Image style={styles.logo} source={require('@/assets/images/labclim-logo.png')} />
       </ThemedView>
 
       <ThemedView style={styles.generalDataContainer}>
         <ThemedView style={styles.hydrologicalDataContainer}>
           <ThemedText type='subtitle' style={styles.hydrologicalDataTitle}>
-            Dados Hidrológicos:
+            Previsão Hidrológica:
           </ThemedText>
           {forecastHydrologicalData.map((forecastRegister) => (
             <ThemedView
@@ -67,18 +71,18 @@ export default function ObservedDataScreen() {
               style={styles.forecastRegisterContainer}
             >
               <ThemedText type='default'>
-                Data do Registro:{' '}
-                {format(forecastRegister.date, 'dd/MM/yyyy HH:mm')}
+                Data do Registro: {format(forecastRegister.date, 'dd/MM/yyyy')}
               </ThemedText>
               <ThemedText type='default'>
-                Nível do Rio: {forecastRegister.elevation}m
+                Nível do Rio: {formatNumericalData(forecastRegister.elevation)}{' '}
+                m
               </ThemedText>
               <ThemedText type='default'>
                 Interpretação Climatológica:{' '}
                 {forecastRegister.climatologicalInterpretation}
               </ThemedText>
               <ThemedText type='default'>
-                Vazão: {forecastRegister.flow} m³/s
+                Vazão: {formatNumericalData(forecastRegister.flow)} m³/s
               </ThemedText>
             </ThemedView>
           ))}
@@ -89,6 +93,16 @@ export default function ObservedDataScreen() {
 }
 
 const styles = StyleSheet.create({
+  logo: {
+    width: 60,
+    height: 60,
+    resizeMode: 'contain'
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   forecastRegisterContainer: {
     marginBottom: 20,
   },
@@ -101,12 +115,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
   },
   generalDataContainer: {
     flex: 1,

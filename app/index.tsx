@@ -2,7 +2,7 @@ import { STATIONS, Station } from '@/constants/stations'
 import { StationProvider } from '@/contexts/stationContext'
 import { useStationContext } from '@/hooks/useStationContext'
 import { Link, router } from 'expo-router'
-import { StyleSheet, Text, View } from 'react-native'
+import { Image, StyleSheet, Text, View } from 'react-native'
 import MapView, { Marker } from 'react-native-maps'
 
 export default function Page() {
@@ -18,11 +18,12 @@ export default function Page() {
       <MapView
         style={styles.map}
         initialRegion={{
-          latitude: -7.5028,
-          longitude: -63.0183,
-          latitudeDelta: 11,
-          longitudeDelta: 11,
+          latitude: -9.9256,
+          longitude: -63.0714,
+          latitudeDelta: 8,
+          longitudeDelta: 8,
         }}
+        toolbarEnabled={false}
       >
         {STATIONS.map((station) => (
           <Marker
@@ -36,6 +37,12 @@ export default function Page() {
           />
         ))}
       </MapView>
+      <View style={styles.logoContainer}>
+        <Image
+          style={styles.logo}
+          source={require('@/assets/images/labclim-logo-horizontal.png')}
+        />
+      </View>
     </View>
   )
 }
@@ -62,5 +69,16 @@ const styles = StyleSheet.create({
   map: {
     width: '100%',
     height: '100%',
+  },
+  logo: {
+    width: 130,
+    height: 130,
+    resizeMode: 'contain',
+  },
+  logoContainer: {
+    position: 'absolute',
+    bottom: -35,
+    right: 5,
+    opacity: 0.8,
   },
 })

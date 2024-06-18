@@ -1,4 +1,4 @@
-import { StyleSheet, ActivityIndicator } from 'react-native'
+import { StyleSheet, ActivityIndicator, Image } from 'react-native'
 
 import { ThemedText } from '@/components/ThemedText'
 import { ThemedView } from '@/components/ThemedView'
@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 import { Colors } from '@/constants/Colors'
 import { format } from 'date-fns'
 import { useStationContext } from '@/hooks/useStationContext'
+import { formatNumericalData } from '@/utils/formatData'
 
 type ObservedMeteorologicalData = {
   id: string
@@ -38,14 +39,18 @@ export default function ObservedDataScreen() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch(`https://labclim.uea.edu.br/api/hydrological-data/observed/${station.id}`)
+    fetch(
+      `https://labclim.uea.edu.br/api/hydrological-data/observed/${station.id}`
+    )
       .then((response) => response.json())
       .then((data) => {
         setObservedHydrologicalData(data)
       })
       .catch((e) => console.error(e))
 
-    fetch(`https://labclim.uea.edu.br/api/meteorological-data/observed/${station.id}`)
+    fetch(
+      `https://labclim.uea.edu.br/api/meteorological-data/observed/${station.id}`
+    )
       .then((response) => response.json())
       .then((data) => {
         setObservedMeteorologicalData(data)
@@ -65,9 +70,9 @@ export default function ObservedDataScreen() {
   return (
     <ThemedView style={styles.mainContainer}>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type='title'>
-          {station.name}
-        </ThemedText>
+        <Image style={styles.logo} source={require('@/assets/images/uea.png')} />
+        <ThemedText type='title'>{station.name}</ThemedText>
+        <Image style={styles.logo} source={require('@/assets/images/labclim-logo.png')} />
       </ThemedView>
 
       <ThemedView style={styles.generalDataContainer}>
@@ -81,14 +86,15 @@ export default function ObservedDataScreen() {
               {format(observedHydrologicalData.date, 'dd/MM/yyyy HH:mm')}
             </ThemedText>
             <ThemedText type='default'>
-              Nível do Rio: {observedHydrologicalData.elevation}m
+              Nível do Rio:{' '}
+              {formatNumericalData(observedHydrologicalData.elevation)} m
             </ThemedText>
             <ThemedText type='default'>
               Interpretação Climatológica:{' '}
               {observedHydrologicalData.climatologicalInterpretation}
             </ThemedText>
             <ThemedText type='default'>
-              Vazão: {observedHydrologicalData.flow} m³/s
+              Vazão: {formatNumericalData(observedHydrologicalData.flow)} m³/s
             </ThemedText>
             <ThemedText type='default'>
               Chuva Acumulada do Dia:{' '}
@@ -98,13 +104,16 @@ export default function ObservedDataScreen() {
         )}
         {observedMeteorologicalData.date && (
           <ThemedView style={styles.meteorologicalDataContainer}>
-            <ThemedText style={styles.dataTitle} type='subtitle'>Dados Meteorológicos:</ThemedText>
+            <ThemedText style={styles.dataTitle} type='subtitle'>
+              Dados Meteorológicos:
+            </ThemedText>
             <ThemedText type='default'>
               Data do Registro:{' '}
               {format(observedMeteorologicalData.date, 'dd/MM/yyyy HH:mm')}
             </ThemedText>
             <ThemedText type='default'>
-              Temperatura: {observedMeteorologicalData.temperature}
+              Temperatura:{' '}
+              {formatNumericalData(observedMeteorologicalData.temperature)}
               °C
             </ThemedText>
             <ThemedText type='default'>
@@ -118,21 +127,26 @@ export default function ObservedDataScreen() {
 }
 
 const styles = StyleSheet.create({
+  logo: {
+    width: 60,
+    height: 60,
+    resizeMode: 'contain'
+  },
   mainContainer: {
     flex: 1,
     paddingTop: '20%',
     padding: 20,
   },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    // height: 100
+  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
   },
   generalDataContainer: {
     flex: 1,
