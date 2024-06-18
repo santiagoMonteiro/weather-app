@@ -15,7 +15,7 @@ export default function TabLayout() {
         headerShown: false,
       }}>
       <Tabs.Screen
-        name="[id]"
+        name="observedDataScreen"
         options={{
           title: 'Dados Observados',
           tabBarIcon: ({ color, focused }) => (
@@ -24,7 +24,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="forecastDataScreen"
         options={{
           title: 'Previsão',
           tabBarIcon: ({ color, focused }) => (

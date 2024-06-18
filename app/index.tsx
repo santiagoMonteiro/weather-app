@@ -1,13 +1,18 @@
-import { STATIONS } from '@/constants/stations'
+import { STATIONS, Station } from '@/constants/stations'
+import { StationProvider } from '@/contexts/stationContext'
+import { useStationContext } from '@/hooks/useStationContext'
 import { Link, router } from 'expo-router'
 import { StyleSheet, Text, View } from 'react-native'
 import MapView, { Marker } from 'react-native-maps'
 
-function handleOpenStationPage(id: string) {
-  router.push(`(tabs)/${id}`)
-}
-
 export default function Page() {
+  const { selectStation } = useStationContext()
+
+  function handleOpenStationPage(station: Station) {
+    selectStation(station)
+    router.push('(tabs)/observedDataScreen')
+  }
+
   return (
     <View style={styles.container}>
       <MapView
@@ -27,7 +32,7 @@ export default function Page() {
               longitude: station.longitude,
             }}
             title={station.name}
-            onPress={() => handleOpenStationPage(station.id)}
+            onPress={() => handleOpenStationPage(station)}
           />
         ))}
       </MapView>

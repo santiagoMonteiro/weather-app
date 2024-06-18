@@ -6,6 +6,7 @@ import { useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { Colors } from '@/constants/Colors'
 import { format } from 'date-fns'
+import { useStationContext } from '@/hooks/useStationContext'
 
 type ObservedMeteorologicalData = {
   id: string
@@ -25,8 +26,8 @@ type ObservedHydrologicalData = {
   climatologicalInterpretation: string
 }
 
-export default function HomeScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>()
+export default function ObservedDataScreen() {
+  const { station } = useStationContext()
 
   const [observedHydrologicalData, setObservedHydrologicalData] =
     useState<ObservedHydrologicalData>({} as ObservedHydrologicalData)
@@ -37,14 +38,14 @@ export default function HomeScreen() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch(`https://labclim.uea.edu.br/api/hydrological-data/observed/${id}`)
+    fetch(`https://labclim.uea.edu.br/api/hydrological-data/observed/${station.id}`)
       .then((response) => response.json())
       .then((data) => {
         setObservedHydrologicalData(data)
       })
       .catch((e) => console.error(e))
 
-    fetch(`https://labclim.uea.edu.br/api/meteorological-data/observed/${id}`)
+    fetch(`https://labclim.uea.edu.br/api/meteorological-data/observed/${station.id}`)
       .then((response) => response.json())
       .then((data) => {
         setObservedMeteorologicalData(data)
@@ -65,51 +66,52 @@ export default function HomeScreen() {
     <ThemedView style={styles.mainContainer}>
       <ThemedView style={styles.titleContainer}>
         <ThemedText type='title'>
-          {observedHydrologicalData.station_id}
+          {station.name}
         </ThemedText>
       </ThemedView>
 
       <ThemedView style={styles.generalDataContainer}>
-        <ThemedView style={styles.hydrologicalDataContainer}>
-          <ThemedText type='subtitle' style={styles.hydrologicalDataTitle}>
-            Dados Hidrológicos:
-          </ThemedText>
-          <ThemedText type='default'>
-            Data do Registro:{' '}
-            {observedHydrologicalData.date &&
-              format(observedHydrologicalData.date, 'dd/MM/yyyy HH:mm')}
-          </ThemedText>
-          <ThemedText type='default'>
-            Nível do Rio: {observedHydrologicalData.elevation}m
-          </ThemedText>
-          <ThemedText type='default'>
-            Interpretação Climatológica:{' '}
-            {observedHydrologicalData.climatologicalInterpretation}
-          </ThemedText>
-          <ThemedText type='default'>
-            Vazão: {observedHydrologicalData.flow} m³/s
-          </ThemedText>
-          <ThemedText type='default'>
-            Chuva Acumulada do Dia: {observedHydrologicalData.accumulated_rain}{' '}
-            mm
-          </ThemedText>
-        </ThemedView>
-
-        <ThemedText type='subtitle'>Dados Meteorológicos:</ThemedText>
-        <ThemedView style={styles.meteorologicalDataContainer}>
-          <ThemedText type='default'>
-            Data do Registro:{' '}
-            {observedMeteorologicalData.date &&
-              format(observedMeteorologicalData.date, 'dd/MM/yyyy HH:mm')}
-          </ThemedText>
-          <ThemedText type='default'>
-            Temperatura: {observedMeteorologicalData.temperature}
-            °C
-          </ThemedText>
-          <ThemedText type='default'>
-            Umidade: {observedMeteorologicalData.humidity}%
-          </ThemedText>
-        </ThemedView>
+        {observedHydrologicalData.date && (
+          <ThemedView style={styles.hydrologicalDataContainer}>
+            <ThemedText type='subtitle' style={styles.dataTitle}>
+              Dados Hidrológicos:
+            </ThemedText>
+            <ThemedText type='default'>
+              Data do Registro:{' '}
+              {format(observedHydrologicalData.date, 'dd/MM/yyyy HH:mm')}
+            </ThemedText>
+            <ThemedText type='default'>
+              Nível do Rio: {observedHydrologicalData.elevation}m
+            </ThemedText>
+            <ThemedText type='default'>
+              Interpretação Climatológica:{' '}
+              {observedHydrologicalData.climatologicalInterpretation}
+            </ThemedText>
+            <ThemedText type='default'>
+              Vazão: {observedHydrologicalData.flow} m³/s
+            </ThemedText>
+            <ThemedText type='default'>
+              Chuva Acumulada do Dia:{' '}
+              {observedHydrologicalData.accumulated_rain} mm
+            </ThemedText>
+          </ThemedView>
+        )}
+        {observedMeteorologicalData.date && (
+          <ThemedView style={styles.meteorologicalDataContainer}>
+            <ThemedText style={styles.dataTitle} type='subtitle'>Dados Meteorológicos:</ThemedText>
+            <ThemedText type='default'>
+              Data do Registro:{' '}
+              {format(observedMeteorologicalData.date, 'dd/MM/yyyy HH:mm')}
+            </ThemedText>
+            <ThemedText type='default'>
+              Temperatura: {observedMeteorologicalData.temperature}
+              °C
+            </ThemedText>
+            <ThemedText type='default'>
+              Umidade: {observedMeteorologicalData.humidity}%
+            </ThemedText>
+          </ThemedView>
+        )}
       </ThemedView>
     </ThemedView>
   )
@@ -142,7 +144,7 @@ const styles = StyleSheet.create({
   hydrologicalDataContainer: {
     marginBottom: 30,
   },
-  hydrologicalDataTitle: {
+  dataTitle: {
     marginBottom: 20,
   },
 })

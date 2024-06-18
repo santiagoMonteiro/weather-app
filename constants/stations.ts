@@ -1,4 +1,4 @@
-type Station = {
+export type Station = {
   id: string
   name: string
   latitude: number
