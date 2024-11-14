@@ -8,24 +8,8 @@ import { Colors } from '@/constants/Colors'
 import { format } from 'date-fns'
 import { useStationContext } from '@/hooks/useStationContext'
 import { formatNumericalData } from '@/utils/formatData'
-
-type ObservedMeteorologicalData = {
-  id: string
-  date: Date
-  temperature: number
-  humidity: number
-  station_id: string
-}
-
-type ObservedHydrologicalData = {
-  id: string
-  date: Date
-  elevation: number
-  flow: number
-  accumulated_rain: number
-  station_id: string
-  climatologicalInterpretation: string
-}
+import { ObservedHydrologicalData } from '@/@types/observed-hydrological-data'
+import { ObservedMeteorologicalData } from '@/@types/observed-meteorological-data'
 
 export default function ObservedDataScreen() {
   const { station } = useStationContext()

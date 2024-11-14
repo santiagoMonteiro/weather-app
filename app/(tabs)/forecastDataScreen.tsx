@@ -13,15 +13,7 @@ import { Colors } from '@/constants/Colors'
 import { format } from 'date-fns'
 import { useStationContext } from '@/hooks/useStationContext'
 import { formatNumericalData } from '@/utils/formatData'
-
-type ForecastHydrologicalData = {
-  id: string
-  date: Date
-  elevation: number
-  flow: number
-  station_id: string
-  climatologicalInterpretation: string
-}
+import { ForecastHydrologicalData } from '@/@types/forecast-hydrological-data'
 
 export default function ObservedDataScreen() {
   const { station } = useStationContext()
@@ -55,9 +47,15 @@ export default function ObservedDataScreen() {
   return (
     <ThemedView style={styles.mainContainer}>
       <ThemedView style={styles.titleContainer}>
-        <Image style={styles.logo} source={require('@/assets/images/uea.png')} />
+        <Image
+          style={styles.logo}
+          source={require('@/assets/images/uea.png')}
+        />
         <ThemedText type='title'>{station.name}</ThemedText>
-        <Image style={styles.logo} source={require('@/assets/images/labclim-logo.png')} />
+        <Image
+          style={styles.logo}
+          source={require('@/assets/images/labclim-logo.png')}
+        />
       </ThemedView>
 
       <ThemedView style={styles.generalDataContainer}>
@@ -96,7 +94,7 @@ const styles = StyleSheet.create({
   logo: {
     width: 60,
     height: 60,
-    resizeMode: 'contain'
+    resizeMode: 'contain',
   },
   titleContainer: {
     flexDirection: 'row',

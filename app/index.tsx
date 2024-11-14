@@ -1,16 +1,43 @@
+import { ObservedHydrologicalData } from '@/@types/observed-hydrological-data'
 import { STATIONS, Station } from '@/constants/stations'
-import { StationProvider } from '@/contexts/stationContext'
 import { useStationContext } from '@/hooks/useStationContext'
 import { Link, router } from 'expo-router'
 import { Image, StyleSheet, Text, View } from 'react-native'
 import MapView, { Marker } from 'react-native-maps'
 
 export default function Page() {
-  const { selectStation } = useStationContext()
+  const { selectStation, recentObservedHydrologicalData } = useStationContext()
 
   function handleOpenStationPage(station: Station) {
     selectStation(station)
-    router.push('(tabs)/observedDataScreen')
+    router.push('/(tabs)/observedDataScreen')
+  }
+
+  interface CustomMapMarkerProps {
+    data: ObservedHydrologicalData | undefined
+  }
+
+  function CustomMapMarker({ data }: CustomMapMarkerProps) {
+    const interpretation = data?.climatologicalInterpretation
+    const elevation = data?.elevation
+
+    const colors = {
+      '-3': '#8B0000',
+      '-2': '#FF4500',
+      '-1': '#FFD700',
+      '0': '#00FF00',
+      '1': '#00ffd1',
+      '2': '#00BFFF',
+      '3': '#00008B',
+    }
+
+    if (interpretation) {
+      return (
+        <View style={[styles.markerContainer, { backgroundColor: colors[interpretation] }]}>
+          <Text style={styles.markerText}>{elevation?.toFixed(1)}</Text>
+        </View>
+      )
+    }
   }
 
   return (
@@ -34,7 +61,19 @@ export default function Page() {
             }}
             title={station.name}
             onPress={() => handleOpenStationPage(station)}
-          />
+          >
+            <CustomMapMarker
+              data={recentObservedHydrologicalData.find(
+                (e) => e.station_id === station.id
+              )}
+            />
+          </Marker> // <CustomMapMarker
+          //   key={station.id}
+          //   latitude={station.latitude}
+          //   longitude={station.longitude}
+          //   value={10}
+          //   color='blue'
+          // />
         ))}
       </MapView>
       <View style={styles.logoContainer}>
@@ -80,5 +119,17 @@ const styles = StyleSheet.create({
     bottom: -35,
     right: 5,
     opacity: 0.8,
+  },
+  markerContainer: {
+    width: 35,
+    height: 35,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: '100%',
+  },
+  markerText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold',
   },
 })
