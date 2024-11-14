@@ -33,7 +33,12 @@ export default function Page() {
 
     if (interpretation) {
       return (
-        <View style={[styles.markerContainer, { backgroundColor: colors[interpretation] }]}>
+        <View
+          style={[
+            styles.markerContainer,
+            { backgroundColor: colors[interpretation] },
+          ]}
+        >
           <Text style={styles.markerText}>{elevation?.toFixed(1)}</Text>
         </View>
       )
@@ -67,19 +72,19 @@ export default function Page() {
                 (e) => e.station_id === station.id
               )}
             />
-          </Marker> // <CustomMapMarker
-          //   key={station.id}
-          //   latitude={station.latitude}
-          //   longitude={station.longitude}
-          //   value={10}
-          //   color='blue'
-          // />
+          </Marker>
         ))}
       </MapView>
       <View style={styles.logoContainer}>
         <Image
           style={styles.logo}
           source={require('@/assets/images/labclim-logo-horizontal.png')}
+        />
+      </View>
+      <View style={styles.labelsContainer}>
+        <Image
+          style={styles.labels}
+          source={require('@/assets/images/labels.png')}
         />
       </View>
     </View>
@@ -109,16 +114,10 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  logo: {
-    width: 130,
-    height: 130,
-    resizeMode: 'contain',
-  },
-  logoContainer: {
-    position: 'absolute',
-    bottom: -35,
-    right: 5,
-    opacity: 0.8,
+  markerText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold',
   },
   markerContainer: {
     width: 35,
@@ -127,9 +126,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: '100%',
   },
-  markerText: {
-    color: 'white',
-    fontSize: 12,
-    fontWeight: 'bold',
+  labelsContainer: {
+    position: 'absolute',
+    bottom: 5,
+    borderRadius: 20,
+  },
+  labels: {
+    width: 400,
+    height: 100,
+    resizeMode: 'contain',
+    borderRadius: 10,
+  },
+  logo: {
+    width: 130,
+    height: 50,
+    resizeMode: 'contain',
+  },
+  logoContainer: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    opacity: 0.8
   },
 })
