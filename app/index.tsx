@@ -118,9 +118,8 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   markerText: {
-    // color: 'black',
     fontSize: 12,
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
   markerContainer: {
     width: 35,
@@ -128,6 +127,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: '100%',
+    borderWidth: 0.5,
+    borderColor: 'black'
   },
   labelsContainer: {
     position: 'absolute',
