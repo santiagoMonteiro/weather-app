@@ -4,5 +4,5 @@ export type ForecastHydrologicalData = {
   elevation: number
   flow: number
   station_id: string
-  climatologicalInterpretation: string
+  climatologicalInterpretation: '-3' | '-2' | '-1' | '0' | '1' | '2' | '3';
 }

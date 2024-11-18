@@ -3,7 +3,7 @@ import { interpretationColors } from '@/constants/intepretation-colors'
 import { Text, View } from 'react-native'
 
 interface ClimatologicalInterpretationProps {
-  interpretation: string
+  interpretation: '-3' | '-2' | '-1' | '0' | '1' | '2' | '3';
 }
 
 export function ClimatologicalInterpretation({
