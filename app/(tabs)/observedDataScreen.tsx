@@ -1,4 +1,4 @@
-import { StyleSheet, ActivityIndicator, Image } from 'react-native'
+import { StyleSheet, ActivityIndicator, Image, View } from 'react-native'
 
 import { ThemedText } from '@/components/ThemedText'
 import { ThemedView } from '@/components/ThemedView'
@@ -10,6 +10,8 @@ import { useStationContext } from '@/hooks/useStationContext'
 import { formatNumericalData } from '@/utils/formatData'
 import { ObservedHydrologicalData } from '@/@types/observed-hydrological-data'
 import { ObservedMeteorologicalData } from '@/@types/observed-meteorological-data'
+import { ClimatologicalInterpretation } from '@/components/ClimatologicalIntepretation'
+import { interpretationColors } from '@/constants/intepretation-colors'
 
 export default function ObservedDataScreen() {
   const { station } = useStationContext()
@@ -54,9 +56,15 @@ export default function ObservedDataScreen() {
   return (
     <ThemedView style={styles.mainContainer}>
       <ThemedView style={styles.titleContainer}>
-        <Image style={styles.logo} source={require('@/assets/images/uea.png')} />
+        <Image
+          style={styles.logo}
+          source={require('@/assets/images/uea.png')}
+        />
         <ThemedText type='title'>{station.name}</ThemedText>
-        <Image style={styles.logo} source={require('@/assets/images/labclim-logo.png')} />
+        <Image
+          style={styles.logo}
+          source={require('@/assets/images/labclim-logo.png')}
+        />
       </ThemedView>
 
       <ThemedView style={styles.generalDataContainer}>
@@ -65,25 +73,28 @@ export default function ObservedDataScreen() {
             <ThemedText type='subtitle' style={styles.dataTitle}>
               Dados Hidrológicos:
             </ThemedText>
-            <ThemedText type='default'>
-              Data do Registro:{' '}
-              {format(observedHydrologicalData.date, 'dd/MM/yyyy HH:mm')}
+            <ThemedText type='defaultSemiBold'>
+              {format(observedHydrologicalData.date, 'dd/MM/yyyy HH:mm') + 'h'}
             </ThemedText>
-            <ThemedText type='default'>
-              Nível do Rio:{' '}
-              {formatNumericalData(observedHydrologicalData.elevation)} m
-            </ThemedText>
-            <ThemedText type='default'>
-              Interpretação Climatológica:{' '}
-              {observedHydrologicalData.climatologicalInterpretation}
-            </ThemedText>
-            <ThemedText type='default'>
-              Vazão: {formatNumericalData(observedHydrologicalData.flow)} m³/s
-            </ThemedText>
-            <ThemedText type='default'>
-              Chuva Acumulada do Dia:{' '}
-              {observedHydrologicalData.accumulated_rain} mm
-            </ThemedText>
+            <View style={styles.innerContainer}>
+              <ThemedText type='default'>
+                Nível do Rio:{' '}
+                {formatNumericalData(observedHydrologicalData.elevation)} m
+              </ThemedText>
+              <ClimatologicalInterpretation
+                interpretation={
+                  observedHydrologicalData.climatologicalInterpretation
+                }
+              />
+
+              <ThemedText type='default'>
+                Vazão: {formatNumericalData(observedHydrologicalData.flow)} m³/s
+              </ThemedText>
+              <ThemedText type='default'>
+                Chuva Acumulada do Dia:{' '}
+                {observedHydrologicalData.accumulated_rain} mm
+              </ThemedText>
+            </View>
           </ThemedView>
         )}
         {observedMeteorologicalData.date && (
@@ -91,18 +102,20 @@ export default function ObservedDataScreen() {
             <ThemedText style={styles.dataTitle} type='subtitle'>
               Dados Meteorológicos:
             </ThemedText>
-            <ThemedText type='default'>
-              Data do Registro:{' '}
-              {format(observedMeteorologicalData.date, 'dd/MM/yyyy HH:mm')}
+            <ThemedText type='defaultSemiBold'>
+              {format(observedMeteorologicalData.date, 'dd/MM/yyyy HH:mm') +
+                'h'}
             </ThemedText>
-            <ThemedText type='default'>
-              Temperatura:{' '}
-              {formatNumericalData(observedMeteorologicalData.temperature)}
-              °C
-            </ThemedText>
-            <ThemedText type='default'>
-              Umidade: {observedMeteorologicalData.humidity}%
-            </ThemedText>
+            <View style={styles.innerContainer}>
+              <ThemedText type='default'>
+                Temperatura:{' '}
+                {formatNumericalData(observedMeteorologicalData.temperature)}
+                °C
+              </ThemedText>
+              <ThemedText type='default'>
+                Umidade: {observedMeteorologicalData.humidity}%
+              </ThemedText>
+            </View>
           </ThemedView>
         )}
       </ThemedView>
@@ -114,7 +127,7 @@ const styles = StyleSheet.create({
   logo: {
     width: 60,
     height: 60,
-    resizeMode: 'contain'
+    resizeMode: 'contain',
   },
   mainContainer: {
     flex: 1,
@@ -144,5 +157,9 @@ const styles = StyleSheet.create({
   },
   dataTitle: {
     marginBottom: 20,
+  },
+  innerContainer: {
+    marginLeft: 20,
+    marginTop: 10,
   },
 })

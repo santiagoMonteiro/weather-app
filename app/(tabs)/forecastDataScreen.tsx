@@ -4,6 +4,7 @@ import {
   ScrollView,
   SafeAreaView,
   Image,
+  View,
 } from 'react-native'
 
 import { ThemedText } from '@/components/ThemedText'
@@ -14,6 +15,7 @@ import { format } from 'date-fns'
 import { useStationContext } from '@/hooks/useStationContext'
 import { formatNumericalData } from '@/utils/formatData'
 import { ForecastHydrologicalData } from '@/@types/forecast-hydrological-data'
+import { ClimatologicalInterpretation } from '@/components/ClimatologicalIntepretation'
 
 export default function ObservedDataScreen() {
   const { station } = useStationContext()
@@ -68,20 +70,21 @@ export default function ObservedDataScreen() {
               key={forecastRegister.id}
               style={styles.forecastRegisterContainer}
             >
-              <ThemedText type='default'>
-                Data do Registro: {format(forecastRegister.date, 'dd/MM/yyyy')}
+              <ThemedText type='defaultSemiBold'>
+                {format(forecastRegister.date, 'dd/MM/yyyy')}
               </ThemedText>
-              <ThemedText type='default'>
-                Nível do Rio: {formatNumericalData(forecastRegister.elevation)}{' '}
-                m
-              </ThemedText>
-              <ThemedText type='default'>
-                Interpretação Climatológica:{' '}
-                {forecastRegister.climatologicalInterpretation}
-              </ThemedText>
-              <ThemedText type='default'>
-                Vazão: {formatNumericalData(forecastRegister.flow)} m³/s
-              </ThemedText>
+              <View style={styles.innerContainer}>
+                <ThemedText type='default'>
+                  Nível do Rio:{' '}
+                  {formatNumericalData(forecastRegister.elevation)} m
+                </ThemedText>
+                <ClimatologicalInterpretation
+                  interpretation={forecastRegister.climatologicalInterpretation}
+                />
+                <ThemedText type='default'>
+                  Vazão: {formatNumericalData(forecastRegister.flow)} m³/s
+                </ThemedText>
+              </View>
             </ThemedView>
           ))}
         </ThemedView>
@@ -123,5 +126,9 @@ const styles = StyleSheet.create({
   },
   hydrologicalDataTitle: {
     marginBottom: 20,
+  },
+  innerContainer: {
+    marginLeft: 20,
+    marginTop: 10,
   },
 })

@@ -1,4 +1,5 @@
 import { ObservedHydrologicalData } from '@/@types/observed-hydrological-data'
+import { interpretationColors } from '@/constants/intepretation-colors'
 import { STATIONS, Station } from '@/constants/stations'
 import { useStationContext } from '@/hooks/useStationContext'
 import { Link, router } from 'expo-router'
@@ -21,22 +22,12 @@ export default function Page() {
     const interpretation = data?.climatologicalInterpretation
     const elevation = data?.elevation
 
-    const colors = {
-      '-3': '#8B0000',
-      '-2': '#FF4500',
-      '-1': '#FFD700',
-      '0': '#00FF00',
-      '1': '#00ffd1',
-      '2': '#00BFFF',
-      '3': '#00008B',
-    }
-
     if (interpretation) {
       return (
         <View
           style={[
             styles.markerContainer,
-            { backgroundColor: colors[interpretation] },
+            { backgroundColor: interpretationColors[interpretation] },
           ]}
         >
           <Text style={styles.markerText}>{elevation?.toFixed(1)}</Text>
