@@ -15,13 +15,22 @@ export function ClimatologicalInterpretation({
         { backgroundColor: interpretationColors[interpretation] },
         { padding: 5 },
         { borderRadius: 5 },
-        // { maxWidth: 180 },
+        { marginTop: 3 },
+        { marginBottom: 3 },
       ]}
     >
       <Text
-      style={[
-        // {textAlign: 'center'}
-      ]}>{descriptionOfInterpretation[interpretation]}</Text>
+        style={[
+          {
+            color:
+              interpretation === '-3' || interpretation === '3'
+                ? 'white'
+                : 'black',
+          },
+        ]}
+      >
+        {descriptionOfInterpretation[interpretation]}
+      </Text>
     </View>
   )
 }

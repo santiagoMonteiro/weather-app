@@ -30,7 +30,19 @@ export default function Page() {
             { backgroundColor: interpretationColors[interpretation] },
           ]}
         >
-          <Text style={styles.markerText}>{elevation?.toFixed(1)}</Text>
+          <Text
+            style={[
+              styles.markerText,
+              {
+                color:
+                  interpretation === '-3' || interpretation === '3'
+                    ? 'white'
+                    : 'black',
+              },
+            ]}
+          >
+            {elevation?.toFixed(1)}
+          </Text>
         </View>
       )
     }
@@ -106,7 +118,7 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   markerText: {
-    color: 'white',
+    // color: 'black',
     fontSize: 12,
     fontWeight: 'bold',
   },
@@ -137,6 +149,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 5,
     right: 5,
-    opacity: 0.8
+    opacity: 0.8,
   },
 })
